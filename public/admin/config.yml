@@ -1,0 +1,64 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
+
+collections:
+  - name: "pages"
+    label: "Pages"
+    files:
+      - file: "src/content/home.json"
+        label: "Home Page"
+        name: "home"
+        fields:
+          - {label: "Hero Badge", name: "hero_badge", widget: "string", default: "ISO Certified • Est. 2015"}
+          - {label: "Hero Title", name: "hero_title", widget: "string", default: "Solar EPC & Electrical Infrastructure."}
+          - {label: "Hero Description", name: "hero_description", widget: "text", default: "Doon Infrapower Projects Pvt. Ltd. delivers end-to-end Solar Solutions..."}
+          - {label: "Primary CTA Text", name: "cta_primary_text", widget: "string", default: "Get a Quote"}
+          - {label: "Primary CTA Link", name: "cta_primary_link", widget: "string", default: "#contact"}
+          - {label: "Secondary CTA Text", name: "cta_secondary_text", widget: "string", default: "Our Services"}
+          - {label: "Secondary CTA Link", name: "cta_secondary_link", widget: "string", default: "#features"}
+      
+      - file: "src/content/about.json"
+        label: "About Page"
+        name: "about"
+        fields:
+          - {label: "Title", name: "title", widget: "string", default: "Technical Excellence. Since 2015."}
+          - {label: "Description", name: "description", widget: "markdown"}
+          - {label: "Director Image", name: "director_image", widget: "image"}
+          - {label: "Director Quote", name: "director_quote", widget: "string"}
+          - {label: "Director Name", name: "director_name", widget: "string"}
+      - file: "src/content/contact.json"
+        label: "Contact & Footer"
+        name: "contact"
+        fields:
+          - {label: "Address", name: "address", widget: "string", default: "711, Doon Enclave, Vidhyadhar Nagar, Jaipur 302039"}
+          - {label: "Email", name: "email", widget: "string", default: "info@dooninfra.in"}
+          - {label: "Phone", name: "phone", widget: "string", default: "+91 94140 50061"}
+          - {label: "Copyright Text", name: "copyright", widget: "string", default: "© 2024 Doon Infrapower Projects Pvt. Ltd. GST No. 08AAGCD1602E1Z7"}
+
+  - name: "services"
+    label: "Services"
+    folder: "src/content/services"
+    create: true
+    slug: "{{slug}}"
+    format: "json"
+    fields:
+      - {label: "Title", name: "title", widget: "string"}
+      - {label: "Description", name: "description", widget: "text"}
+      - {label: "Icon Name", name: "icon", widget: "select", options: ["Zap", "Factory", "UtilityPole", "Briefcase", "ShieldCheck", "Award"], default: "Zap"}
+
+  - name: "projects"
+    label: "Projects"
+    folder: "src/content/projects"
+    create: true
+    slug: "{{slug}}"
+    format: "json"
+    fields:
+      - {label: "Title", name: "title", widget: "string"}
+      - {label: "Category", name: "category", widget: "select", options: ["Residential", "Commercial", "Industrial", "Infrastructure"]}
+      - {label: "Location", name: "location", widget: "string"}
+      - {label: "Capacity", name: "capacity", widget: "string"}
+      - {label: "Image", name: "image", widget: "image"}

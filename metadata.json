@@ -1,0 +1,7 @@
+{
+  "name": "Doon Infrapower",
+  "description": "Doon Infrapower Projects Pvt. Ltd. - Solar EPC, Transformer Manufacturing, and Electrical Infrastructure experts based in Jaipur.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
