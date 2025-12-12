@@ -26,7 +26,7 @@ const Contact: React.FC = () => {
     const data = Object.fromEntries(formData.entries());
 
     try {
-      const response = await fetch('https://formsubmit.co/ajax/info@dooninfra.in', {
+      const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -82,10 +82,7 @@ const Contact: React.FC = () => {
             onSubmit={handleSubmit}
             className="space-y-6"
           >
-            {/* FormSubmit.co Configuration */}
-            <input type="hidden" name="_subject" value="New Contact Request from Doon Infra Website" />
-            <input type="hidden" name="_template" value="table" />
-            <input type="hidden" name="_captcha" value="false" />
+
 
             <div className="grid md:grid-cols-2 gap-6">
               <InputField label="Full Name" name="name" placeholder="John Doe" />
