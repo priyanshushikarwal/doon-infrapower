@@ -1,15 +1,26 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin } from 'lucide-react';
-import { Project } from '../types';
-import { getProjects } from '../src/lib/content';
+import { client, urlFor } from '../src/lib/sanity';
 
 const categories = ["All", "Residential", "Commercial", "Industrial", "Infrastructure"];
 
+interface Project {
+  _id: string;
+  title: string;
+  category: string;
+  location: string;
+  capacity: string;
+  mainImage: any;
+}
 
 const Portfolio: React.FC = () => {
-  const projects = useMemo(() => getProjects(), []);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [activeCategory, setActiveCategory] = useState("All");
+
+  useEffect(() => {
+    client.fetch(`*[_type == "project"]`).then(setProjects).catch(console.error);
+  }, []);
 
   const filteredProjects = activeCategory === "All"
     ? projects
@@ -44,9 +55,11 @@ const Portfolio: React.FC = () => {
 
         <motion.div layout className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           <AnimatePresence>
-            {filteredProjects.map((project) => (
+            {projects.length === 0 ? (
+              <div className="col-span-3 text-center py-10 text-neutral-400">Loading projects...</div>
+            ) : filteredProjects.map((project) => (
               <motion.div
-                key={project.id}
+                key={project._id}
                 layout
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -54,11 +67,13 @@ const Portfolio: React.FC = () => {
                 transition={{ duration: 0.4 }}
                 className="group relative aspect-[4/5] rounded-3xl overflow-hidden cursor-pointer"
               >
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
+                {project.mainImage && (
+                  <img
+                    src={urlFor(project.mainImage).url()}
+                    alt={project.title}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                )}
 
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
