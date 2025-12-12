@@ -16,6 +16,50 @@ const InputField: React.FC<{ label: string; name: string; type?: string; placeho
 );
 
 const Contact: React.FC = () => {
+  const [formState, setFormState] = React.useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setFormState('submitting');
+
+    const formData = new FormData(e.currentTarget);
+
+    try {
+      await fetch('/', {
+        method: 'POST',
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams(formData as any).toString()
+      });
+      setFormState('success');
+    } catch (error) {
+      setFormState('error');
+    }
+  };
+
+  if (formState === 'success') {
+    return (
+      <section id="contact" className="py-24 bg-white relative">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <div className="bg-green-50 p-12 rounded-[40px] border border-green-100">
+            <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Send className="text-white w-8 h-8" />
+            </div>
+            <h3 className="text-3xl font-bold text-neutral-900 mb-4">Request Sent!</h3>
+            <p className="text-neutral-500 max-w-md mx-auto">
+              Thank you for reaching out. Our team will review your requirements and get back to you at <strong>info@dooninfra.in</strong> shortly.
+            </p>
+            <button
+              onClick={() => setFormState('idle')}
+              className="mt-8 text-neutral-900 font-semibold hover:underline"
+            >
+              Send another message
+            </button>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="contact" className="py-24 bg-white relative">
       <div className="max-w-4xl mx-auto px-6">
@@ -26,7 +70,13 @@ const Contact: React.FC = () => {
         </div>
 
         <div className="bg-white p-8 md:p-12 rounded-[40px] shadow-2xl shadow-neutral-100 border border-neutral-100">
-          <form name="contact" method="POST" data-netlify="true" className="space-y-6">
+          <form
+            name="contact"
+            method="POST"
+            data-netlify="true"
+            onSubmit={handleSubmit}
+            className="space-y-6"
+          >
             <input type="hidden" name="form-name" value="contact" />
 
             <div className="grid md:grid-cols-2 gap-6">
@@ -44,6 +94,7 @@ const Contact: React.FC = () => {
                 name="message"
                 placeholder="Describe your requirement..."
                 rows={4}
+                required
                 className="peer w-full bg-white border border-neutral-200 rounded-xl px-4 pt-6 pb-2 text-neutral-900 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-neutral-900/10 focus:border-neutral-900 transition-all shadow-sm hover:shadow-md resize-none"
               ></textarea>
               <label className="absolute left-4 top-2 text-xs text-neutral-400 font-medium transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-neutral-400 peer-placeholder-shown:top-4 peer-focus:top-2 peer-focus:text-xs peer-focus:text-neutral-900 pointer-events-none">
@@ -52,9 +103,17 @@ const Contact: React.FC = () => {
             </div>
 
             <div className="pt-4">
-              <button type="submit" className="w-full bg-neutral-900 text-white rounded-xl py-4 font-semibold text-lg hover:bg-neutral-800 transition-all active:scale-[0.99] flex items-center justify-center gap-2">
-                Send Request <Send size={18} />
+              <button
+                type="submit"
+                disabled={formState === 'submitting'}
+                className="w-full bg-neutral-900 text-white rounded-xl py-4 font-semibold text-lg hover:bg-neutral-800 transition-all active:scale-[0.99] flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+              >
+                {formState === 'submitting' ? 'Sending...' : 'Send Request'}
+                {formState !== 'submitting' && <Send size={18} />}
               </button>
+              {formState === 'error' && (
+                <p className="text-red-500 text-center mt-4">Something went wrong. Please try again.</p>
+              )}
             </div>
           </form>
         </div>
