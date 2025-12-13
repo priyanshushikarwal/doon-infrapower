@@ -23,15 +23,23 @@ const Contact: React.FC = () => {
     setFormState('submitting');
 
     const formData = new FormData(e.currentTarget);
+    const data = Object.fromEntries(formData.entries());
 
     try {
-      await fetch('/', {
+      const response = await fetch('/api/contact', {
         method: 'POST',
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams(formData as any).toString()
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(data)
       });
+
+      if (!response.ok) throw new Error('Failed to send message');
+
       setFormState('success');
     } catch (error) {
+      console.error(error);
       setFormState('error');
     }
   };
@@ -71,13 +79,10 @@ const Contact: React.FC = () => {
 
         <div className="bg-white p-8 md:p-12 rounded-[40px] shadow-2xl shadow-neutral-100 border border-neutral-100">
           <form
-            name="contact"
-            method="POST"
-            data-netlify="true"
             onSubmit={handleSubmit}
             className="space-y-6"
           >
-            <input type="hidden" name="form-name" value="contact" />
+
 
             <div className="grid md:grid-cols-2 gap-6">
               <InputField label="Full Name" name="name" placeholder="John Doe" />

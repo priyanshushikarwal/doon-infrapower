@@ -1,0 +1,7 @@
+
+import { defineCliConfig } from 'sanity/cli'
+
+const projectId = process.env.VITE_SANITY_PROJECT_ID || 'fmrcedhu'
+const dataset = process.env.VITE_SANITY_DATASET || 'production'
+
+export default defineCliConfig({ api: { projectId, dataset } })

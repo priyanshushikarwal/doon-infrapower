@@ -1,6 +1,11 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: priyanshushikarwal/doon-infrapower
   branch: main
+  # ⚠️ Vercel Deployment Note: You need to set up an OAuth proxy (like decap-server-vercel) 
+  # or use local_backend for local editing.
+  
+local_backend: true
 
 media_folder: "public/images/uploads"
 public_folder: "/images/uploads"

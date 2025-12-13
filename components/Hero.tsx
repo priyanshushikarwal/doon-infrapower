@@ -1,9 +1,24 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Zap, Settings } from 'lucide-react';
-import homeData from '../src/content/home.json';
+import { client, urlFor } from '../src/lib/sanity';
+
+interface HomeData {
+  hero_badge: string;
+  hero_title: string;
+  hero_description: string;
+  hero_image?: any;
+}
 
 const Hero: React.FC = () => {
+  const [data, setData] = useState<HomeData | null>(null);
+
+  useEffect(() => {
+    client.fetch(`*[_type == "home"][0]`).then(setData).catch(console.error);
+  }, []);
+
+  if (!data) return null; // Or a skeleton loader if preferred
+
   return (
     <section className="relative min-h-screen flex items-center pt-20 overflow-hidden bg-[#FAFAFA]">
       {/* Background Gradients */}
@@ -24,10 +39,10 @@ const Hero: React.FC = () => {
           >
             <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-100 border border-neutral-200 text-xs font-semibold uppercase tracking-wider text-neutral-500 shadow-sm mb-6">
               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-              {homeData.hero_badge}
+              {data.hero_badge || 'ISO Certified • Est. 2015'}
             </span>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter text-neutral-900 leading-[1.1] text-balance">
-              {homeData.hero_title}
+              {data.hero_title || 'Solar EPC & Electrical Infrastructure.'}
             </h1>
           </motion.div>
 
@@ -37,7 +52,7 @@ const Hero: React.FC = () => {
             transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             className="text-lg md:text-xl text-neutral-500 font-light leading-relaxed max-w-lg"
           >
-            {homeData.hero_description}
+            {data.hero_description || 'Doon Infrapower Projects Pvt. Ltd. delivers end-to-end Solar Solutions...'}
           </motion.p>
 
           <motion.div
@@ -47,17 +62,17 @@ const Hero: React.FC = () => {
             className="flex flex-col sm:flex-row gap-4"
           >
             <a
-              href={homeData.cta_primary_link}
+              href="#contact"
               className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-gradient-to-b from-neutral-700 to-neutral-900 text-white font-medium text-lg hover:shadow-lg hover:shadow-neutral-500/20 transition-all active:scale-95 shadow-xl border border-neutral-800"
             >
-              {homeData.cta_primary_text}
+              Get a Quote
               <ArrowRight size={18} />
             </a>
             <a
-              href={homeData.cta_secondary_link}
+              href="#features"
               className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-neutral-100 text-neutral-900 font-medium text-lg hover:bg-neutral-200 transition-all active:scale-95"
             >
-              {homeData.cta_secondary_text}
+              Our Services
             </a>
           </motion.div>
         </div>
@@ -71,7 +86,15 @@ const Hero: React.FC = () => {
         >
           {/* Main Container - White Card Style */}
           <div className="relative w-full h-full rounded-[40px] overflow-hidden bg-white shadow-2xl shadow-neutral-200/50 border border-white">
-            <div className="absolute inset-0 bg-gradient-to-br from-neutral-50/50 to-white/50"></div>
+            {data.hero_image ? (
+              <img
+                src={urlFor(data.hero_image).url()}
+                alt="Hero"
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+            ) : (
+              <div className="absolute inset-0 bg-gradient-to-br from-neutral-50/50 to-white/50"></div>
+            )}
 
             {/* Top Right Floating Card */}
             <motion.div
